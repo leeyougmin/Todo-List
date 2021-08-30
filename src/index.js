@@ -1,77 +1,64 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
+
 import './index.css';
 
-const TodoApp = {
-	init : () => {
-		ReactDOM.render(<TodoApp.Container/>,	document.getElementById('root'));
-	},
-	state : {
+const TodoApp = () => {
+	
+	const state = {
 		items : [
 			{text:'쎕쎄요~', checked: true}
 			, {text:'뭐뭐머하기', checked: false}
 			, {text:'뭐뭐머하기', checked: true}
 		]
-	},
-	Container : () => {
-		return (
-			<main>
-				<TodoApp.Title>TODO</TodoApp.Title>
-				<TodoApp.Form/>
-				<TodoApp.List/>
-			</main>
-		);
-	},
-	Title : (props) => {
-		// let nowDate = new Date();
-		return (
-			<div className="title">
-				<p>{props.children}</p>
-			</div>
-		)
-	},
-	Form : () => {
-		return (
-			<div className="form">
-				<input type="text" id="todoInput" placeholder="Text"/>
-				<button type="button" id="submitBtn" 
-					onClick={(e) => TodoApp.AddTodos()}
-				>
-					Add!!
-				</button>
-			</div>
-		)
-	},
-	List : () => {
-		const [ itemData ] = useState(TodoApp.state.items);
+	}
+
+	const [ item, setItem ] = useState([]);
+	const [ inputValue, setInputValue ] = useState({});
+
+	const List = () => {
 		return (
 			<section>
-				<TodoApp.Item/>
+				<Item/>
 			</section>
 		)
-	},
-	Item : () => {
-		const [ itemData ] = useState(TodoApp.state.items);
+	}
+
+	const Item = () => {
 		return (
 			<ul className="list">
-				{itemData && itemData.map( (items, i) => {
-					return <li 
-								className={`item ${items.checked ? 'checked' : ''}`} 
-								key={i}
-						   >
-						  	{(i+1)+ ". " +items.text}
-						   </li>
+				{item && item.map( (v, i) => {
+					return (
+						<li 
+							className={`item ${v.checked ? 'checked' : ''}`} 
+							key={i}
+						>
+							{(i+1)+ ". " +v.text}
+						</li>
+					);
 				})}
 			</ul>
 		)
-	},
-	AddTodos : () => {
-		const [ todos, setTodos ] = useState(TodoApp.state.items);
-		const value = document.querySelector('#todoInput').value;
-		console.log(value, todos);
-		// setTodos([...todos, {value, checked : false}]);
-
 	}
+	const AddTodos = () => {
+		setItem([...item, inputValue]);
+	}
+
+	return (
+		<main>
+			<div className="title">
+				<p>TODO</p>
+			</div>
+			<div className="form">
+				<input type="text" id="todoInput" placeholder="Text" onChange={(e) => {setInputValue({text : e.target.value, checked : false})}}/>
+				<button type="button" id="submitBtn" onClick={() => AddTodos()}>Add!!</button>
+			</div>
+			<List/>
+		</main>
+	);
 }
 
-window.onload = (e) => TodoApp.init();
+ReactDOM.render(<TodoApp/>,	document.getElementById('root'));
+
+export default TodoApp;
+
